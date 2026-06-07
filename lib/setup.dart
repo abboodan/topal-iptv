@@ -120,7 +120,7 @@ class _SetupState extends State<Setup> {
   }
 
   Future<bool> selectFile() async {
-    var path = (await FilePicker.platform.pickFiles())?.files.single.path;
+    var path = (await FilePicker.pickFiles())?.files.single.path;
     if (path == null) return false;
     formValues[Steps.url] = path;
     return true;

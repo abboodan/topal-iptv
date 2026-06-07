@@ -790,8 +790,39 @@ Stop point:
 
 ## Phase 15: Android Toolchain Repair / AAB Packaging
 
+## Phase 16: Kotlin Warning Cleanup
+
+Goal:
+- Remove Topal's own unnecessary Kotlin Gradle Plugin usage and reduce plugin-side warning surface with stable dependency upgrades.
+
+Status:
+- Completed in this thread.
+
+Implemented behavior:
+- Converted Android host `MainActivity` from Kotlin to Java.
+- Removed `kotlin-android` and `kotlinOptions` from the app module.
+- Upgraded stable `file_picker` to `11.0.2`.
+- Updated file picker usage to the v11 static API.
+- Kept `device_info_plus` and `package_info_plus` on the current resolving stable line because their newer versions conflict with stable `file_picker` through incompatible `win32` constraints.
+
+Verification completed:
+- `flutter pub get` succeeded.
+- `flutter test` passed with 71 tests.
+- `flutter analyze --no-fatal-infos` exited 0 with the existing 13 info-level lints.
+- `flutter build apk --release` succeeded.
+- `flutter build appbundle --release` succeeded.
+- `adb install -r build/app/outputs/flutter-apk/app-release.apk` succeeded.
+- ADB launch smoke confirmed Topal focused and rendered the Live root screen.
+- APK SHA256: `C4388F284E960D72E6FA7541023AB9BDEEABECE8A6FEC5188D40CB3C6CC466F7`.
+- AAB SHA256: `CA398596CF1F4880BC9BC0FDC7D49B327A3BA5CCDCEC8D0ABD6AE49ABC406BA5`.
+
+Remaining warning:
+- Flutter no longer warns that the app module applies KGP.
+- Flutter still warns that upstream plugins apply KGP: `device_info_plus`, `file_picker`, `package_info_plus`, and `wakelock_plus`.
+- This is deferred until stable plugin releases support Built-in Kotlin without conflicting dependency constraints.
+
 ## Approval Request
 
-The recommended next executable phase is Phase 15: Android Toolchain Repair / AAB Packaging.
+The recommended next executable phase is Phase 17: Plugin Built-in Kotlin Readiness.
 
-Do not start Phase 15 until the user explicitly approves it.
+Do not start Phase 17 until the user explicitly approves it.
